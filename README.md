@@ -1,17 +1,20 @@
 # job-portal-application
 🚀 Job Portal Application (MERN Stack)
 A full-stack Job Portal web application built using MongoDB, Express.js, React.js, and Node.js (MERN Stack).
-This platform connects recruiters and job seekers to simplify job posting and job searching.
+This platform connects recruiters and job seekers to simplify job posting and job searching.  
+
 ✨ Features
 👨‍💼 Recruiter Features
 Add, update, delete job postings
 Manage job listings easily
+
 👩‍💻 User Features
 Search jobs by keywords
 Filter jobs by city
 Sort job listings
 Save jobs for later
 Apply for jobs
+
 📊 Additional Features
 Pagination for large datasets
 Analytics dashboard:
@@ -20,13 +23,14 @@ Total companies
 Total cities
 Highest salary
 Average salary
+
 🛠️ Tech Stack
 Frontend: React.js, Hooks, Axios
 Backend: Node.js, Express.js
 Database: MongoDB
 API: RESTful APIs
-📁 Project Structure
 
+📁 Project Structure
 frontend/
 backend/
 🚀 Getting Started
@@ -43,17 +47,17 @@ Bash
 cd frontend
 npm install
 npm start
+
 🔑 Environment Variables
 Create .env file in backend:
-
 MONGO_URI=your_mongodb_url
 PORT=5000
-JWT_SECRET=your_secret
-🌐 Deployment (Tomorrow Plan)
-You can deploy using:
-Frontend: Vercel / Netlify
-Backend: Render / Railway
-Database: MongoDB Atlas
+JWT_SECRET=your_secre
+
+🌐 Deployment 
+Frontend: 
+Backend: 
+Database: 
 📌 Future Improvements
 JWT authentication fully implementation
 Role-based access (Admin / User / Recruiter)
