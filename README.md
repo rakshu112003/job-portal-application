@@ -1,66 +1,81 @@
-# job-portal-application
-🚀 Job Portal Application (MERN Stack)
-A full-stack Job Portal web application built using MongoDB, Express.js, React.js, and Node.js (MERN Stack).
-This platform connects recruiters and job seekers to simplify job posting and job searching.  
+🚀 Job Portal Application
 
-✨ Features
-👨‍💼 Recruiter Features
-Add, update, delete job postings
-Manage job listings easily
+A full-stack Job Portal Application built using the MERN Stack. This project enables users to browse jobs through a modern and responsive interface, while the backend provides secure APIs and database management.
 
-👩‍💻 User Features
-Search jobs by keywords
-Filter jobs by city
-Sort job listings
-Save jobs for later
-Apply for jobs
+📌 Features
 
-📊 Additional Features
-Pagination for large datasets
-Analytics dashboard:
-Total jobs
-Total companies
-Total cities
-Highest salary
-Average salary
+- User Authentication (Login/Logout)
+- Job Listing
+- Search Jobs
+- Filter Jobs
+- Sorting
+- Pagination
+- Responsive UI
+- RESTful API
+- MongoDB Database Integration
 
 🛠️ Tech Stack
-Frontend: React.js, Hooks, Axios
-Backend: Node.js, Express.js
-Database: MongoDB
-API: RESTful APIs
+
+Frontend
+
+- React.js
+- Vite
+- JavaScript
+- HTML5
+- CSS3
+- Axios
+- React Router DOM
+
+Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT (Authentication)
+- REST API
 
 📁 Project Structure
-frontend/
-backend/
+
+job-portal-application/
+│── frontend/
+│── backend/
+└── README.md
+
 🚀 Getting Started
-1. Clone the repository
-Bash
+
+Clone the Repository
+
 git clone https://github.com/rakshu112003/job-portal-application.git
-2. Backend setup
-Bash
+cd job-portal-application
+
+Frontend
+
+cd frontend
+npm install
+npm run dev
+
+Backend
+
 cd backend
 npm install
 npm start
-3. Frontend setup
-Bash
-cd frontend
-npm install
-npm start
 
-🔑 Environment Variables
-Create .env file in backend:
-MONGO_URI=your_mongodb_url
-PORT=5000
-JWT_SECRET=your_secre
+📸 Screenshots
 
-🌐 Deployment 
-Frontend: 
-Backend: 
-Database: 
-📌 Future Improvements
-JWT authentication fully implementation
-Role-based access (Admin / User / Recruiter)
-Email notifications for job applications
-💡 Author
-rakshu Gowda
+Add screenshots of your application here.
+
+🤝 Contributing
+
+Contributions are welcome. Feel free to fork the repository and submit a pull request.
+
+👩‍💻 Author
+
+Rakshitha H N
+
+- GitHub: https://github.com/rakshu112003
+- LinkedIn: https://www.linkedin.com/in/rakshithahn
+
+⭐ Support
+
+If you found this project helpful, please give it a ⭐ on GitHub.
