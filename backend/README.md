@@ -1,60 +1,43 @@
 # 🚀 Job Portal Backend
 
-This is the backend for the Job Portal Application built using Node.js, Express.js, MongoDB Atlas, and JWT Authentication. It provides REST APIs for managing job listings and user authentication.
+Backend for the Job Portal Application built with Node.js, Express.js, MongoDB Atlas, and JWT.
 
 ## 🌐 Live Backend
 
+**Backend URL:**
 https://job-portal-application-5-tc2n.onrender.com
 
-## 📌 API Endpoints
+## 📡 Live API
 
-### Health Check
-GET /
-Returns:
-```
-Backend is alive 🚀
-```
-
-### Get All Jobs
-GET /api/jobs
-
-Example:
-```
+**View All Jobs:**
 https://job-portal-application-5-tc2n.onrender.com/api/jobs
-```
 
-## 🛠️ Tech Stack
+## Features
+
+- REST API
+- Fetch Job Listings
+- MongoDB Atlas Database
+- Express.js Server
+- JWT Authentication
+- Render Deployment
+
+## Tech Stack
 
 - Node.js
 - Express.js
 - MongoDB Atlas
 - Mongoose
-- JWT Authentication
+- JWT
 - Render
 
-## ⚙️ Installation
+## Run Locally
 
 ```bash
-git clone https://github.com/rakshu112003/job-portal-application.git
-cd job-portal-application/backend
 npm install
-```
-
-## ▶️ Run Locally
-
-```bash
 npm start
 ```
 
-Server runs on:
-
-```
-http://localhost:5000
-```
-
-## 🔐 Environment Variables
-
-Create a `.env` file:
+## Environment Variables
 
 ```env
 MONGO_URI=your_mongodb_atlas_connection_string
@@ -62,11 +45,6 @@ JWT_SECRET=your_secret_key
 PORT=5000
 ```
 
-## 🚀 Deployment
-
-- **Backend:** Render
-- **Database:** MongoDB Atlas
-
-## 👨‍💻 Developer
+## Developer
 
 **Rakshith Gowda**
