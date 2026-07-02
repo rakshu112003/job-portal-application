@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Job Portal | Full Frontend</title>
+<style>
+body{margin:0;font-family:Arial;background:#f4f6f8;}
+header{background:#0d6efd;color:white;padding:15px 30px;display:flex;justify-content:space-between;align-items:center;}
+header h2{margin:0;}
+header button{background:white;color:#0d6efd;border:none;padding:8px 14px;border-radius:5px;cursor:pointer;font-weight:bold;}
+.container{padding:20px;}
+.hidden{display:none;}
+input,select,button{padding:7px;margin:5px;border-radius:5px;border:1px solid #ccc;}
+button{cursor:pointer;}
+table{width:100%;border-collapse:collapse;margin-top:15px;}
+th,td{border:1px solid #ccc;padding:8px;text-align:center;}
+th{background:#eee;}
+.card{background:white;padding:15px;border-radius:8px;margin-bottom:15px;box-shadow:0 0 5px #ccc;}
+.hero{padding:40px;text-align:center;background:white;margin-bottom:20px;}
+.hero h1{font-size:32px;margin-bottom:10px;}
+.hero p{font-size:16px;color:#555;}
+.actions button{margin:5px;padding:10px 20px;border-radius:6px;font-size:15px;}
+.btn-primary{background:#0d6efd;color:white;border:none;}
+.btn-outline{background:white;border:2px solid #0d6efd;color:#0d6efd;}
+.features{padding:40px 30px;}
+.features h2{text-align:center;margin-bottom:30px;}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
+footer{background:#222;color:white;text-align:center;padding:15px;margin-top:40px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <h2>Job Portal</h2>
+  <div>
+    <button onclick="show('home')">Home</button>
+    <button onclick="show('jobs')">Job Seeker</button>
+    <button onclick="show('recruiter')">Recruiter</button>
+  </div>
+</header>
+
+<!-- HOME -->
+<div class="container" id="home">
+  <section class="hero">
+    <h1>Find Jobs. Hire Talent. One Platform.</h1>
+    <p>A complete Job Portal connecting Job Seekers and Recruiters</p>
+    <div class="actions">
+      <button class="btn-primary" onclick="show('jobs')">I’m a Job Seeker</button>
+      <button class="btn-outline" onclick="show('recruiter')">I’m a Recruiter</button>
+    </div>
+  </section>
+
+  <section class="features">
+    <h2>Platform Features</h2>
+    <div class="feature-grid">
+      <div class="card"><h3>🔍 Search Jobs</h3><p>Search jobs by title, category, and city.</p></div>
+      <div class="card"><h3>🏙️ Location Filter</h3><p>Mysore, Bengaluru, Udupi, Belgaum, Hubli.</p></div>
+      <div class="card"><h3>🧑‍💼 Recruiter Panel</h3><p>Post jobs, edit, and delete listings easily.</p></div>
+      <div class="card"><h3>📊 Job Management</h3><p>Track ID, Salary, Category, and Availability.</p></div>
+      <div class="card"><h3>🔐 Secure System</h3><p>JWT ready for backend integration.</p></div>
+      <div class="card"><h3>⚛️ React Ready</h3><p>Frontend structured with React mindset.</p></div>
+    </div>
+  </section>
+</div>
+
+<!-- JOB SEEKER -->
+<div class="container hidden" id="jobs">
+  <h3>Job Listings 🔍</h3>
+  <input id="search" placeholder="Search Job">
+  <select id="city">
+    <option value="">All Cities</option>
+    <option>Mysore</option>
+    <option>Bengaluru</option>
+    <option>Udupi</option>
+    <option>Belgaum</option>
+    <option>Hubli</option>
+  </select>
+  <button onclick="filterJobs()">Search / Filter</button>
+
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Job Name</th><th>Category</th><th>City</th><th>Salary</th><th>Action</th></tr>
+    </thead>
+    <tbody id="jobBody"></tbody>
+  </table>
+</div>
+
+<!-- RECRUITER -->
+<div class="container hidden" id="recruiter">
+  <h3>Recruiter Dashboard ➕</h3>
+  <input id="jname" placeholder="Job Name">
+  <input id="jcat" placeholder="Category">
+  <input id="jcity" placeholder="City">
+  <input id="jsal" placeholder="Salary">
+  <button onclick="addJob()">Add Job</button>
+</div>
+
+<script>
+let jobs=[
+{id:1,name:"Frontend Dev",cat:"IT",city:"Bengaluru",sal:"50k"},
+{id:2,name:"Backend Dev",cat:"IT",city:"Mysore",sal:"60k"},
+{id:3,name:"MERN Dev",cat:"IT",city:"Udupi",sal:"55k"}
+];
+
+function show(id){
+document.querySelectorAll('.container').forEach(d=>d.classList.add('hidden'));
+document.getElementById(id).classList.remove('hidden');
+if(id==='jobs') render(jobs);
+}
+
+function render(list){
+let b=document.getElementById("jobBody");
+b.innerHTML="";
+list.forEach(j=>{
+b.innerHTML+=`
+<tr>
+<td>${j.id}</td>
+<td>${j.name}</td>
+<td>${j.cat}</td>
+<td>${j.city}</td>
+<td>${j.sal}</td>
+<td>
+<button onclick="editJob(${j.id})">Edit</button>
+<button onclick="delJob(${j.id})">Delete</button>
+</td>
+</tr>`;
+});
+}
+
+function filterJobs(){
+let s=document.getElementById("search").value.toLowerCase();
+let c=document.getElementById("city").value;
+let f=jobs.filter(j=>j.name.toLowerCase().includes(s)&&(c==""||j.city==c));
+render(f);
+}
+
+function addJob(){
+let n=jname.value,c=jcat.value,ci=jcity.value,s=jsal.value;
+if(!n||!c||!ci||!s){alert("Fill all fields");return;}
+jobs.push({id:jobs.length+1,name:n,cat:c,city:ci,sal:s});
+alert("Job Added ✅");
+jname.value=jcat.value=jcity.value=jsal.value="";
+render(jobs);
+}
+
+function editJob(id){
+let j=jobs.find(x=>x.id===id);
+j.name=prompt("Job Name",j.name)||j.name;
+j.cat=prompt("Category",j.cat)||j.cat;
+j.sal=prompt("Salary",j.sal)||j.sal;
+render(jobs);
+}
+
+function delJob(id){
+if(confirm("Delete job?")){
+jobs=jobs.filter(j=>j.id!==id);
+render(jobs);
+}
+}
+</script>
+
+<footer>
+Job Portal | Full Frontend Ready Backend Intergration in connecting
+</footer>
+
+</body>
+</html>
