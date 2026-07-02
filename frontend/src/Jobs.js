@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import axios from "axios";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { CSVLink } from "react-csv";
@@ -40,7 +40,8 @@ function Jobs() {
     setTimeout(() => setToast({ show: false, msg: "", type: "" }), 3000);
   };
 
-  const fetchJobs = () => {
+  // ✅ FIX 1: useCallback use maadi fetchJobs wrap maadide
+  const fetchJobs = useCallback(() => {
     setLoading(true);
     axios
      .get("https://job-portal-application-5-tc2n.onrender.com/api/jobs")
@@ -50,11 +51,12 @@ function Jobs() {
         showToast("Failed to fetch jobs", "error");
       })
      .finally(() => setLoading(false));
-  };
+  }, []);
 
+  // ✅ FIX 2: Dependency array alli fetchJobs add maadide
   useEffect(() => {
     fetchJobs();
-  }, []);
+  }, [fetchJobs]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -556,7 +558,6 @@ const cancelIconBtn = { padding: "8px 16px", background: "#ef4444", color: "#fff
 const filterBar = { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" };
 const searchWrap = { position: "relative", flex: "1", minWidth: "200px" };
 const searchIcon = { position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", zIndex: 1 };
-// 🔥 UI FIX: paddingLeft 40px maadidini, 40px bottom alli alla
 const searchInput = { width: "100%", padding: "10px 10px 10px 40px", border: "2px solid #e5e7eb", borderRadius: "8px", fontSize: "0.9rem" };
 const selectStyle = { padding: "10px", border: "2px solid #e5e7eb", borderRadius: "8px", minWidth: "150px", fontSize: "0.9rem", cursor: "pointer" };
 const loadingWrap = { textAlign: "center", padding: "40px" };
