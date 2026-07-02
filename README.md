@@ -7,6 +7,7 @@ A full-stack MERN Job Portal application that enables users to manage job listin
 - Frontend: https://job-portal-application-hnk8-phi.vercel.app/
 - Backend API:
 -  https://job-portal-application-5-tc2n.onrender.com
+-  https://job-portal-application-5-tc2n.onrender.com/api/jobs
 
 📌 Features
 
