@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { CSVLink } from "react-csv";
@@ -40,23 +40,24 @@ function Jobs() {
     setTimeout(() => setToast({ show: false, msg: "", type: "" }), 3000);
   };
 
-  // ✅ FIX 1: useCallback use maadi fetchJobs wrap maadide
-  const fetchJobs = useCallback(() => {
+  // ✅ SIMPLE FUNCTION - useCallback beda
+  const fetchJobs = () => {
     setLoading(true);
     axios
-     .get("https://job-portal-application-5-tc2n.onrender.com/api/jobs")
-     .then((res) => setJobs(res.data))
-     .catch((err) => {
+    .get("https://job-portal-application-5-tc2n.onrender.com/api/jobs")
+    .then((res) => setJobs(res.data))
+    .catch((err) => {
         console.log(err);
         showToast("Failed to fetch jobs", "error");
       })
-     .finally(() => setLoading(false));
-  }, []);
+    .finally(() => setLoading(false));
+  };
 
-  // ✅ FIX 2: Dependency array alli fetchJobs add maadide
+  // ✅ ESLint disable maadi - mount aadaaga 1 sala maatru run aagutte
   useEffect(() => {
     fetchJobs();
-  }, [fetchJobs]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,30 +94,30 @@ function Jobs() {
 
     if (editId) {
       axios
-       .put(`https://job-portal-application-5-tc2n.onrender.com/api/jobs/${editId}`, payload)
-       .then(() => {
+      .put(`https://job-portal-application-5-tc2n.onrender.com/api/jobs/${editId}`, payload)
+      .then(() => {
           showToast("Job Updated ✅");
           fetchJobs();
           resetForm();
         })
-       .catch((err) => {
+      .catch((err) => {
           console.log("Update error:", err.response?.data || err);
           showToast("Failed to update job", "error");
         })
-       .finally(() => setLoading(false));
+      .finally(() => setLoading(false));
     } else {
       axios
-       .post("https://job-portal-application-5-tc2n.onrender.com/api/jobs", payload)
-       .then(() => {
+      .post("https://job-portal-application-5-tc2n.onrender.com/api/jobs", payload)
+      .then(() => {
           showToast("Job Added ✅");
           fetchJobs();
           resetForm();
         })
-       .catch((err) => {
+      .catch((err) => {
           console.log(err);
           showToast("Failed to add job", "error");
         })
-       .finally(() => setLoading(false));
+      .finally(() => setLoading(false));
     }
   };
 
@@ -130,16 +131,16 @@ function Jobs() {
     if (!window.confirm("Delete this job?")) return;
     setLoading(true);
     axios
-     .delete(`https://job-portal-application-5-tc2n.onrender.com/api/jobs/${id}`)
-     .then(() => {
+    .delete(`https://job-portal-application-5-tc2n.onrender.com/api/jobs/${id}`)
+    .then(() => {
         showToast("Job Deleted ✅");
         fetchJobs();
       })
-     .catch((err) => {
+    .catch((err) => {
         console.log(err);
         showToast("Failed to delete job", "error");
       })
-     .finally(() => setLoading(false));
+    .finally(() => setLoading(false));
   };
 
   const handleEdit = (job) => {
@@ -171,22 +172,22 @@ function Jobs() {
   const normalizeName = (name) => {
     if (!name) return "";
     return name
-     .trim()
-     .toLowerCase()
-     .split(" ")
-     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-     .join(" ");
+    .trim()
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
   };
 
   const uniqueCompanies = useMemo(() => {
     const normalized = jobs.map((j) => normalizeName(j.company)).filter(Boolean);
     return [...new Set(normalized)];
-  }, [jobs]);
+  }, );
 
   const uniqueCities = useMemo(() => {
     const normalized = jobs.map((j) => normalizeName(j.location)).filter(Boolean);
     return [...new Set(normalized)];
-  }, [jobs]);
+  }, );
 
   const salaryStats = useMemo(() => {
     if (jobs.length === 0) return { highest: 0, average: 0, total: 0 };
@@ -196,7 +197,7 @@ function Jobs() {
     const highest = Math.max(...salaries);
     const average = Math.round(total / salaries.length);
     return { highest, average, total };
-  }, [jobs]);
+  }, );
 
   const cityData = useMemo(() => {
     const cityMap = {};
@@ -205,10 +206,10 @@ function Jobs() {
       if (city) cityMap[city] = (cityMap[city] || 0) + 1;
     });
     return Object.entries(cityMap)
-     .map(([name, jobs]) => ({ name, jobs }))
-     .sort((a, b) => b.jobs - a.jobs)
-     .slice(0, 8);
-  }, [jobs]);
+    .map(([name, jobs]) => ({ name, jobs }))
+    .sort((a, b) => b.jobs - a.jobs)
+    .slice(0, 8);
+  }, );
 
   const companyData = useMemo(() => {
     const companyMap = {};
@@ -217,10 +218,10 @@ function Jobs() {
       if (company) companyMap[company] = (companyMap[company] || 0) + 1;
     });
     return Object.entries(companyMap)
-     .map(([name, jobs]) => ({ name, jobs }))
-     .sort((a, b) => b.jobs - a.jobs)
-     .slice(0, 8);
-  }, [jobs]);
+    .map(([name, jobs]) => ({ name, jobs }))
+    .sort((a, b) => b.jobs - a.jobs)
+    .slice(0, 8);
+  }, );
 
   const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
