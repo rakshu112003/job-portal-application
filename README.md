@@ -1,30 +1,67 @@
-🚀 Job Portal Application
+💼 Job Portal Application
 
-A full-stack Job Portal Application built using the MERN Stack. This project enables users to browse jobs through a modern and responsive interface, while the backend provides secure APIs and database management.
+A full-stack MERN Job Portal application that enables users to manage job listings with complete CRUD functionality, search and filter jobs, view analytics, export data, and save favorite jobs.
+
+🚀 Live Demo
+
+- Frontend: https://job-portal-application-hnk8-phi.vercel.app/
+- Backend API: https://job-portal-application-5-tc2n.onrender.com
 
 📌 Features
 
-- User Authentication (Login/Logout)
-- Job Listing
-- Search Jobs
-- Filter Jobs
-- Sorting
+Job Management
+
+- Add new jobs
+- Update existing jobs
+- Delete jobs
+- View all job listings
+
+Search & Filter
+
+- Search by job title
+- Search by company
+- Filter by city
+- Sort by newest
+- Sort by salary (High → Low)
+- Sort by salary (Low → High)
+- Sort alphabetically
+
+User Features
+
+- Save/Favorite jobs
+- Apply button
 - Pagination
-- Responsive UI
-- RESTful API
-- MongoDB Database Integration
+- Responsive design
+
+Dashboard
+
+- Total jobs
+- Total companies
+- Total cities
+- Saved jobs count
+- Highest salary
+- Average salary
+- Jobs by city chart
+- Jobs by company chart
+- City distribution pie chart
+
+Additional Features
+
+- Form validation
+- Loading spinner
+- Toast notifications
+- CSV Export
+- Local Storage support
 
 🛠️ Tech Stack
 
 Frontend
 
-- React.js
-- Vite
-- JavaScript
-- HTML5
-- CSS3
+- React
 - Axios
-- React Router DOM
+- Recharts
+- React CSV
+- CSS
 
 Backend
 
@@ -32,50 +69,67 @@ Backend
 - Express.js
 - MongoDB
 - Mongoose
-- JWT (Authentication)
-- REST API
+
+Deployment
+
+- Frontend: Vercel
+- Backend: Render
 
 📁 Project Structure
 
 job-portal-application/
-│── frontend/
-│── backend/
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   └── package.json
+│
+├── backend/
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── server.js
+│   └── package.json
+│
 └── README.md
 
-🚀 Getting Started
+⚙️ Installation
 
-Clone the Repository
+Clone Repository
 
 git clone https://github.com/rakshu112003/job-portal-application.git
-cd job-portal-application
 
-Frontend
-
-cd frontend
-npm install
-npm run dev
-
-Backend
+Install Backend
 
 cd backend
 npm install
 npm start
 
-📸 Screenshots
+Install Frontend
 
-Add screenshots of your application here.
+cd frontend
+npm install
+npm start
 
-🤝 Contributing
+🌐 API Endpoint
 
-Contributions are welcome. Feel free to fork the repository and submit a pull request.
+GET    /api/jobs
+POST   /api/jobs
+PUT    /api/jobs/:id
+DELETE /api/jobs/:id
 
-👩‍💻 Author
+🎯 Future Improvements
 
-Rakshitha H N
+- User Authentication (JWT)
+- Recruiter & Candidate Login
+- Apply with Resume Upload
+- Email Notifications
+- Admin Dashboard
+- Dark Mode
+- Advanced Filters
 
-- GitHub: https://github.com/rakshu112003
-- LinkedIn: https://www.linkedin.com/in/rakshithahn
+👨‍💻 Developer
 
-⭐ Support
+Rakshu Gowda
 
-If you found this project helpful, please give it a ⭐ on GitHub.
+Built as a MERN Stack portfolio project to demonstrate full-stack development skills, REST API integration, CRUD operations, analytics, and responsive UI design.
