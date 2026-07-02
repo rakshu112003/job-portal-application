@@ -14,7 +14,6 @@ function Jobs() {
   const [toast, setToast] = useState({ show: false, msg: "", type: "" });
   const [showSavedOnly, setShowSavedOnly] = useState(false);
 
-  // 1. SAVED JOBS - localStorage
   const [savedJobs, setSavedJobs] = useState(() => {
     const saved = localStorage.getItem("savedJobs");
     return saved? JSON.parse(saved) : [];
@@ -32,7 +31,6 @@ function Jobs() {
 
   const [errors, setErrors] = useState({});
 
-  // Save to localStorage whenever savedJobs changes
   useEffect(() => {
     localStorage.setItem("savedJobs", JSON.stringify(savedJobs));
   }, [savedJobs]);
@@ -45,13 +43,13 @@ function Jobs() {
   const fetchJobs = () => {
     setLoading(true);
     axios
-  .get("http://localhost:5000/api/jobs")
-  .then((res) => setJobs(res.data))
-  .catch((err) => {
+     .get("https://job-portal-application-5-tc2n.onrender.com/api/jobs")
+     .then((res) => setJobs(res.data))
+     .catch((err) => {
         console.log(err);
         showToast("Failed to fetch jobs", "error");
       })
-  .finally(() => setLoading(false));
+     .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -93,30 +91,30 @@ function Jobs() {
 
     if (editId) {
       axios
-    .put(`http://localhost:5000/api/jobs/${editId}`, payload)
-    .then(() => {
+       .put(`https://job-portal-application-5-tc2n.onrender.com/api/jobs/${editId}`, payload)
+       .then(() => {
           showToast("Job Updated ✅");
           fetchJobs();
           resetForm();
         })
-    .catch((err) => {
+       .catch((err) => {
           console.log("Update error:", err.response?.data || err);
           showToast("Failed to update job", "error");
         })
-    .finally(() => setLoading(false));
+       .finally(() => setLoading(false));
     } else {
       axios
-    .post("http://localhost:5000/api/jobs", payload)
-    .then(() => {
+       .post("https://job-portal-application-5-tc2n.onrender.com/api/jobs", payload)
+       .then(() => {
           showToast("Job Added ✅");
           fetchJobs();
           resetForm();
         })
-    .catch((err) => {
+       .catch((err) => {
           console.log(err);
           showToast("Failed to add job", "error");
         })
-    .finally(() => setLoading(false));
+       .finally(() => setLoading(false));
     }
   };
 
@@ -130,16 +128,16 @@ function Jobs() {
     if (!window.confirm("Delete this job?")) return;
     setLoading(true);
     axios
-  .delete(`http://localhost:5000/api/jobs/${id}`)
-  .then(() => {
+     .delete(`https://job-portal-application-5-tc2n.onrender.com/api/jobs/${id}`)
+     .then(() => {
         showToast("Job Deleted ✅");
         fetchJobs();
       })
-  .catch((err) => {
+     .catch((err) => {
         console.log(err);
         showToast("Failed to delete job", "error");
       })
-  .finally(() => setLoading(false));
+     .finally(() => setLoading(false));
   };
 
   const handleEdit = (job) => {
@@ -158,10 +156,9 @@ function Jobs() {
     showToast(`Applied Successfully ✅\n${job.title} at ${job.company}`);
   };
 
-  // 2. SAVE/UNSAVE JOB - Frontend only
   const toggleSaveJob = (jobId) => {
     if (savedJobs.includes(jobId)) {
-      setSavedJobs(savedJobs.filter(id => id!== jobId));
+      setSavedJobs(savedJobs.filter((id) => id!== jobId));
       showToast("Job Removed from Saved 💔");
     } else {
       setSavedJobs([...savedJobs, jobId]);
@@ -171,58 +168,60 @@ function Jobs() {
 
   const normalizeName = (name) => {
     if (!name) return "";
-    return name.trim().toLowerCase().split(' ').map(word =>
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
+    return name
+     .trim()
+     .toLowerCase()
+     .split(" ")
+     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+     .join(" ");
   };
 
   const uniqueCompanies = useMemo(() => {
-    const normalized = jobs.map(j => normalizeName(j.company)).filter(Boolean);
+    const normalized = jobs.map((j) => normalizeName(j.company)).filter(Boolean);
     return [...new Set(normalized)];
-  }, );
+  }, [jobs]);
 
   const uniqueCities = useMemo(() => {
-    const normalized = jobs.map(j => normalizeName(j.location)).filter(Boolean);
+    const normalized = jobs.map((j) => normalizeName(j.location)).filter(Boolean);
     return [...new Set(normalized)];
-  }, );
+  }, [jobs]);
 
   const salaryStats = useMemo(() => {
     if (jobs.length === 0) return { highest: 0, average: 0, total: 0 };
-    const salaries = jobs.map(job => Number(job.salary) || 0).filter(s => s > 0);
+    const salaries = jobs.map((job) => Number(job.salary) || 0).filter((s) => s > 0);
     if (salaries.length === 0) return { highest: 0, average: 0, total: 0 };
     const total = salaries.reduce((sum, sal) => sum + sal, 0);
     const highest = Math.max(...salaries);
     const average = Math.round(total / salaries.length);
     return { highest, average, total };
-  }, );
+  }, [jobs]);
 
   const cityData = useMemo(() => {
     const cityMap = {};
-    jobs.forEach(job => {
+    jobs.forEach((job) => {
       const city = normalizeName(job.location);
       if (city) cityMap[city] = (cityMap[city] || 0) + 1;
     });
     return Object.entries(cityMap)
-  .map(([name, jobs]) => ({ name, jobs }))
-  .sort((a, b) => b.jobs - a.jobs)
-  .slice(0, 8);
-  }, );
+     .map(([name, jobs]) => ({ name, jobs }))
+     .sort((a, b) => b.jobs - a.jobs)
+     .slice(0, 8);
+  }, [jobs]);
 
   const companyData = useMemo(() => {
     const companyMap = {};
-    jobs.forEach(job => {
+    jobs.forEach((job) => {
       const company = normalizeName(job.company);
       if (company) companyMap[company] = (companyMap[company] || 0) + 1;
     });
     return Object.entries(companyMap)
-  .map(([name, jobs]) => ({ name, jobs }))
-  .sort((a, b) => b.jobs - a.jobs)
-  .slice(0, 8);
-  }, );
+     .map(([name, jobs]) => ({ name, jobs }))
+     .sort((a, b) => b.jobs - a.jobs)
+     .slice(0, 8);
+  }, [jobs]);
 
   const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
-  // FILTER + SORT + SAVED FILTER
   const filteredJobs = useMemo(() => {
     let filtered = jobs.filter((job) => {
       const title = job.title?.toLowerCase() || "";
@@ -249,7 +248,6 @@ function Jobs() {
     }
   }, [jobs, searchTerm, cityFilter, sortBy, showSavedOnly, savedJobs]);
 
-  // 3. CSV EXPORT DATA
   const csvData = useMemo(() => {
     return filteredJobs.map(job => ({
       Title: job.title,
@@ -430,7 +428,7 @@ function Jobs() {
 
             <button
               onClick={() => setShowSavedOnly(!showSavedOnly)}
-              style={{...selectStyle, backgroundColor: showSavedOnly? "#ec4899" : "#fff", color: showSavedOnly? "#fff" : "#374151", cursor: "pointer", border: "2px solid #e5e7eb"}}
+              style={{...selectStyle, backgroundColor: showSavedOnly? "#ec4899" : "#fff", color: showSavedOnly? "#fff" : "#374151", cursor: "pointer", border: "2px solid #e5e7eb" }}
             >
               {showSavedOnly? "❤️ Show All" : "❤️ Saved Only"}
             </button>
@@ -438,7 +436,7 @@ function Jobs() {
             <CSVLink
               data={csvData}
               filename={"jobs_export.csv"}
-              style={{...selectStyle, backgroundColor: "#10b981", color: "#fff", cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", border: "none"}}
+              style={{...selectStyle, backgroundColor: "#10b981", color: "#fff", cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", border: "none" }}
             >
               📄 Export CSV
             </CSVLink>
@@ -524,7 +522,62 @@ function Jobs() {
   );
 }
 
-// COMPONENTS
+// ===== ALL STYLES & COMPONENTS =====
+const containerStyle = { minHeight: "100vh", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", padding: "20px", fontFamily: "'Inter', sans-serif" };
+const maxWidthWrap = { maxWidth: "1200px", margin: "0 auto" };
+const heroSection = { textAlign: "center", color: "#fff", padding: "40px 20px" };
+const titleStyle = { fontSize: "3rem", fontWeight: "800", margin: "0" };
+const subtitleStyle = { fontSize: "1.2rem", margin: "10px 0" };
+const descStyle = { fontSize: "1rem", opacity: "0.9" };
+const glassCard = { background: "rgba(255,255,255,0.95)", borderRadius: "16px", padding: "24px", marginBottom: "20px", boxShadow: "0 8px 32px rgba(0,0,0,0.1)" };
+const sectionTitle = { fontSize: "1.5rem", marginBottom: "16px" };
+const featuresGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" };
+const featureItem = { display: "flex", gap: "12px", alignItems: "center" };
+const featureIcon = { fontSize: "2rem" };
+const featureTitle = { fontSize: "1rem", margin: "0", fontWeight: "600" };
+const featureDesc = { fontSize: "0.85rem", margin: "0", color: "#6b7280" };
+const statsGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "16px", marginBottom: "20px" };
+const statCard = { background: "#fff", borderRadius: "12px", padding: "20px", textAlign: "center", borderTop: "4px solid #3b82f6" };
+const statNumber = { fontSize: "1.8rem", fontWeight: "700", margin: "8px 0" };
+const statLabel = { fontSize: "0.85rem", color: "#6b7280" };
+const cardHeader = { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" };
+const cardTitle = { fontSize: "1.2rem", margin: "0" };
+const toggleBtn = { padding: "8px 16px", border: "none", borderRadius: "8px", background: "#3b82f6", color: "#fff", cursor: "pointer", fontWeight: "600" };
+const chartsGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "16px" };
+const chartCard = { background: "#f9fafb", padding: "16px", borderRadius: "12px" };
+const chartTitle = { fontSize: "1rem", marginBottom: "12px", textAlign: "center", fontWeight: "600" };
+const formGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px", marginBottom: "16px" };
+const inputWrap = { display: "flex", flexDirection: "column" };
+const labelStyle = { fontSize: "0.85rem", fontWeight: "600", marginBottom: "4px" };
+const inputStyle = { padding: "10px", border: "2px solid #e5e7eb", borderRadius: "8px", fontSize: "0.9rem" };
+const errorText = { color: "#ef4444", fontSize: "0.75rem", marginTop: "4px" };
+const primaryBtn = { width: "100%", padding: "12px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: "8px", fontSize: "1rem", fontWeight: "600", cursor: "pointer" };
+const cancelIconBtn = { padding: "8px 16px", background: "#ef4444", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600" };
+const filterBar = { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" };
+const searchWrap = { position: "relative", flex: "1", minWidth: "200px" };
+const searchIcon = { position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", zIndex: 1 };
+// 🔥 UI FIX: paddingLeft 40px maadidini, 40px bottom alli alla
+const searchInput = { width: "100%", padding: "10px 10px 10px 40px", border: "2px solid #e5e7eb", borderRadius: "8px", fontSize: "0.9rem" };
+const selectStyle = { padding: "10px", border: "2px solid #e5e7eb", borderRadius: "8px", minWidth: "150px", fontSize: "0.9rem", cursor: "pointer" };
+const loadingWrap = { textAlign: "center", padding: "40px" };
+const spinner = { border: "4px solid #f3f4f6", borderTop: "4px solid #3b82f6", borderRadius: "50%", width: "40px", height: "40px", animation: "spin 1s linear infinite", margin: "0 auto" };
+const loadingText = { marginTop: "12px", color: "#6b7280" };
+const tableStyle = { width: "100%", borderCollapse: "collapse" };
+const thStyle = { padding: "12px", textAlign: "left", borderBottom: "2px solid #e5e7eb", fontSize: "0.85rem", fontWeight: "600", color: "#374151" };
+const trStyle = { borderBottom: "1px solid #f3f4f6" };
+const tdStyle = { padding: "12px", fontSize: "0.9rem" };
+const cityBadge = { background: "#dbeafe", color: "#1e40af", padding: "4px 8px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: "500" };
+const salaryText = { fontWeight: "600", color: "#059669" };
+const saveBtn = { background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer", marginRight: "8px" };
+const applyBtn = { padding: "6px 12px", background: "#10b981", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", marginRight: "8px", fontSize: "0.8rem", fontWeight: "600" };
+const iconBtn = { background: "none", border: "none", fontSize: "1rem", cursor: "pointer", marginRight: "4px", padding: "4px" };
+const emptyTd = { padding: "40px", textAlign: "center" };
+const emptyState = { color: "#6b7280" };
+const paginationWrap = { display: "flex", justifyContent: "center", alignItems: "center", gap: "16px", marginTop: "20px" };
+const pageBtn = { padding: "8px 16px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600" };
+const pageText = { fontSize: "0.9rem", fontWeight: "600" };
+const toastStyle = { position: "fixed", top: "20px", right: "20px", padding: "12px 20px", borderRadius: "8px", color: "#fff", fontWeight: "600", zIndex: "9999", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" };
+
 const FeatureItem = ({ icon, title, desc }) => (
   <div style={featureItem}>
     <div style={featureIcon}>{icon}</div>
@@ -536,122 +589,30 @@ const FeatureItem = ({ icon, title, desc }) => (
 );
 
 const StatCard = ({ icon, number, label, color }) => (
-  <div style={{...statCard, borderTop: `3px solid ${color}` }}>
-    <div style={{ fontSize: "2.2rem", marginBottom: "8px" }}>{icon}</div>
-    <h3 style={{...statNumber, color }}>{number}</h3>
-    <p style={statLabel}>{label}</p>
+  <div style={{...statCard, borderTop: `4px solid ${color}` }}>
+    <div style={{ fontSize: "2rem" }}>{icon}</div>
+    <div style={statNumber}>{number}</div>
+    <div style={statLabel}>{label}</div>
   </div>
 );
 
 const InputField = ({ label, name, value, onChange, error, placeholder, type = "text" }) => (
-  <div>
+  <div style={inputWrap}>
     <label style={labelStyle}>{label}</label>
     <input
-      name={name}
       type={type}
-      placeholder={placeholder}
+      name={name}
       value={value}
       onChange={onChange}
+      placeholder={placeholder}
       style={{...inputStyle, borderColor: error? "#ef4444" : "#e5e7eb" }}
     />
-    {error && <div style={errorStyle}>{error}</div>}
+    {error && <span style={errorText}>{error}</span>}
   </div>
 );
 
-// STYLES
-const containerStyle = {
-  padding: "20px",
-  fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif",
-  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-  minHeight: "100vh",
-};
-
-const maxWidthWrap = { maxWidth: "1200px", margin: "0 auto" };
-
-const toastStyle = {
-  position: "fixed",
-  top: "20px",
-  right: "20px",
-  padding: "14px 20px",
-  borderRadius: "10px",
-  color: "white",
-  fontWeight: "600",
-  zIndex: 9999,
-  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-  animation: "slideIn 0.3s ease",
-  whiteSpace: "pre-line"
-};
-
-const heroSection = { textAlign: "center", marginBottom: "30px", color: "#fff", padding: "40px 20px" };
-const titleStyle = { fontSize: "3.5rem", margin: "0 0 12px 0", fontWeight: "800", color: "#fff", letterSpacing: "-1px" };
-const subtitleStyle = { fontSize: "1.3rem", margin: "0 0 8px 0", opacity: 0.95, fontWeight: "600" };
-const descStyle = { fontSize: "1rem", margin: 0, opacity: 0.85 };
-const sectionTitle = { margin: "0 0 24px 0", color: "#1f2937", fontSize: "1.5rem", fontWeight: "700", textAlign: "center" };
-const featuresGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "20px" };
-const featureItem = { display: "flex", gap: "16px", alignItems: "flex-start" };
-const featureIcon = { fontSize: "2rem", lineHeight: 1 };
-const featureTitle = { margin: "0 0 4px 0", color: "#1f2937", fontSize: "1rem", fontWeight: "600" };
-const featureDesc = { margin: 0, color: "#6b7280", fontSize: "0.9rem" };
-const statsGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "20px", marginBottom: "24px" };
-const statCard = { backgroundColor: "rgba(255, 255, 255, 0.95)", backdropFilter: "blur(10px)", padding: "28px 20px", borderRadius: "16px", boxShadow: "0 8px 32px rgba(0,0,0,0.1)", textAlign: "center", transition: "transform 0.2s" };
-const statNumber = { fontSize: "1.5rem", fontWeight: "700", margin: "0 0 4px 0" };
-const statLabel = { color: "#6b7280", fontSize: "0.7rem", margin: 0, fontWeight: "500", textTransform: "uppercase", letterSpacing: "0.5px" };
-const glassCard = { backgroundColor: "rgba(255, 255, 255, 0.95)", backdropFilter: "blur(10px)", padding: "28px", borderRadius: "16px", boxShadow: "0 8px 32px rgba(0,0,0,0.1)", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.3)" };
-const cardHeader = { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" };
-const cardTitle = { margin: 0, color: "#1f2937", fontSize: "1.4rem", fontWeight: "700" };
-const toggleBtn = { padding: "8px 16px", border: "2px solid #3b82f6", borderRadius: "8px", backgroundColor: "#eff6ff", color: "#1e40af", cursor: "pointer", fontSize: "14px", fontWeight: "600" };
-const chartsGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px", marginTop: "20px" };
-const chartCard = { padding: "16px", backgroundColor: "#f9fafb", borderRadius: "12px" };
-const chartTitle = { margin: "0 0 16px 0", color: "#374151", fontSize: "1rem", fontWeight: "600", textAlign: "center" };
-const cancelIconBtn = { padding: "8px 16px", border: "2px solid #e5e7eb", borderRadius: "8px", backgroundColor: "#fff", cursor: "pointer", fontSize: "14px", fontWeight: "600", color: "#6b7280" };
-const formGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginBottom: "20px" };
-const labelStyle = { display: "block", marginBottom: "6px", color: "#374151", fontSize: "14px", fontWeight: "600" };
-const inputStyle = { padding: "12px 14px", width: "100%", border: "2px solid #e5e7eb", borderRadius: "10px", fontSize: "14px", outline: "none", boxSizing: "border-box", transition: "border 0.2s" };
-const errorStyle = { color: "#ef4444", fontSize: "12px", marginTop: "6px", fontWeight: "500" };
-const primaryBtn = { padding: "12px 28px", border: "none", borderRadius: "10px", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", color: "white", cursor: "pointer", fontSize: "15px", fontWeight: "600", boxShadow: "0 4px 12px rgba(102, 126, 234, 0.4)", transition: "transform 0.2s" };
-const filterBar = { display: "flex", gap: "12px", flexWrap: "wrap" };
-const searchWrap = { position: "relative", flex: "1", minWidth: "200px" };
-const searchIcon = { position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "16px" };
-const searchInput = { padding: "12px 12px 12px 42px", width: "100%", border: "2px solid #e5e7eb", borderRadius: "10px", fontSize: "14px", outline: "none", boxSizing: "border-box" };
-const selectStyle = { padding: "12px 14px", border: "2px solid #e5e7eb", borderRadius: "10px", fontSize: "14px", outline: "none", minWidth: "140px", backgroundColor: "#fff" };
-const tableStyle = { width: "100%", borderCollapse: "separate", borderSpacing: "0" };
-const thStyle = { padding: "14px", background: "#f9fafb", textAlign: "left", fontWeight: "700", color: "#374151", fontSize: "13px", textTransform: "uppercase", letterSpacing: "0.5px", borderBottom: "2px solid #e5e7eb" };
-const tdStyle = { padding: "16px 14px", color: "#4b5563", borderBottom: "1px solid #f3f4f6" };
-const trStyle = { transition: "background 0.2s" };
-const cityBadge = { padding: "4px 10px", backgroundColor: "#dbeafe", color: "#1e40af", borderRadius: "6px", fontSize: "13px", fontWeight: "500" };
-const salaryText = { color: "#059669", fontWeight: "700" };
-const iconBtn = { padding: "8px 10px", marginRight: "6px", border: "none", borderRadius: "8px", backgroundColor: "#f3f4f6", cursor: "pointer", fontSize: "16px", transition: "background 0.2s" };
-const applyBtn = { padding: "8px 16px", marginRight: "6px", border: "none", borderRadius: "8px", backgroundColor: "#3b82f6", color: "white", cursor: "pointer", fontSize: "14px", fontWeight: "600" };
-const saveBtn = { padding: "8px 10px", marginRight: "6px", border: "none", borderRadius: "8px", backgroundColor: "#fef3c7", cursor: "pointer", fontSize: "18px" };
-const emptyTd = { padding: "60px 20px", textAlign: "center" };
-const emptyState = { color: "#9ca3af", fontSize: "16px" };
-const paginationWrap = { marginTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" };
-const pageBtn = { padding: "10px 18px", border: "2px solid #e5e7eb", borderRadius: "10px", backgroundColor: "#fff", cursor: "pointer", fontSize: "14px", fontWeight: "600", color: "#374151" };
-const pageText = { color: "#6b7280", fontSize: "14px", fontWeight: "600" };
-
-const loadingWrap = { textAlign: "center", padding: "60px 20px" };
-const spinner = {
-  width: "40px",
-  height: "40px",
-  border: "4px solid #e5e7eb",
-  borderTop: "4px solid #3b82f6",
-  borderRadius: "50%",
-  margin: "0 auto 16px",
-  animation: "spin 1s linear infinite"
-};
-const loadingText = { color: "#6b7280", fontSize: "16px", margin: 0 };
-
 const styleSheet = document.createElement("style");
-styleSheet.textContent = `
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  @keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-`;
+styleSheet.innerText = `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`;
 document.head.appendChild(styleSheet);
 
 export default Jobs;
